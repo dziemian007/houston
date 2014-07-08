@@ -1,4 +1,5 @@
 require 'json'
+require 'active_support/core_ext/hash'
 
 module Houston
   class Notification
@@ -24,7 +25,7 @@ module Houston
     end
 
     def payload
-      json = {}.merge(@custom_data || {})
+      json = {}.merge(@custom_data || {}).with_indifferent_access
       json['aps'] ||= {}
       json['aps']['alert'] = @alert if @alert
       json['aps']['badge'] = @badge.to_i rescue 0 if @badge
@@ -60,7 +61,7 @@ module Houston
     end
 
     private
-    
+
     def device_token_item
       [1, 32, @token.gsub(/[<\s>]/, '')].pack('cnH64')
     end
